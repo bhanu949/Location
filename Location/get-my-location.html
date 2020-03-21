@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+<style>
+    .block {
+      display: block;
+      width: 20%;
+      border: none;
+      background-color: #4CAF50;
+      color:aliceblue;
+      padding: 14px 28px;
+      font-size: 16px;
+      text-align: center;
+    }
+</style>
+</head>
+<body>
+    <div id="root"></div>
+
+   <!--https://unpkg.com/react@16.12.0/umd/react.development.js-->
+   <script src="js/react.development.js"></script>
+   <!--https://www.unpkg.com/react-dom@16.12.0/umd/react-dom.development.js-->
+   <script src="js/react-dom.development.js"></script>
+   <!--https://unpkg.com/babel-standalone@6.26.0/babel.js-->
+      <script src="js/babel.js"></script>
+   <script type="text/babel">
+       const rootHandle = document.getElementById('root');
+       class Location extends React.Component{
+           constructor(){
+               super()
+               this.state={
+                   latitude:'',
+                   longitude:'',
+                   zone:"",
+                   temperature1:0, 
+                   temperature2:0                
+               }
+           }
+        
+
+  getMyLocation=()=> {    
+    const location = window.navigator && window.navigator.geolocation
+    if (location){
+        location.getCurrentPosition((position)=> {
+                                const xhr=new XMLHttpRequest()
+                                xhr.open('GET',`https://api.darksky.net/forecast/f9a9fa45add29baf1393ac77dc7bc340/${position.coords.latitude},${position.coords.longitude}`)
+                                xhr.send()
+                                xhr.onload=()=>{
+                                const a=JSON.parse(xhr.responseText)
+                                this.setState({temperature1:a.currently.temperature,
+                                               temperature2:((5/9)*(a.currently.temperature-32)).toFixed(2),
+                                               zone:a.timezone})
+                                     }
+                                this.setState({ latitude:position.coords.latitude,
+                                                longitude:position.coords.longitude })
+
+                              })
+                          
+                     }
+                }
+            
+
+    render() {
+        let lat=this.state.latitude,long=this.state.longitude
+           return (
+            <div>
+              <button type="button" className="block" onClick={this.getMyLocation}>Get My Location</button>
+              <br/>
+              <br/>
+             <h4>Latitude-{this.state.latitude} </h4> 
+             <h4>Longitude-{this.state.longitude}</h4>
+             <h4>Zone-{this.state.zone}</h4>
+             <h4>Temperature in F-{this.state.temperature1}F</h4>
+             <h4>Temperature in C-{this.state.temperature2}C</h4>
+             <img src={`https://www.mapquestapi.com/staticmap/v5/map?key=iT460H68tUWkbBWf2ViGxpj3oCCZSRIa&locations=${lat},${long}&size=@2x&zoom=15`}/>
+             </div>
+             )
+         }
+     }
+
+       ReactDOM.render(<Location/>,rootHandle)
+       </script>
+    
+</body>
+</html>
