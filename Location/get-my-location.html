@@ -48,7 +48,7 @@
     if (location){
         location.getCurrentPosition((position)=> {
                                 const xhr=new XMLHttpRequest()
-                                xhr.open('GET',`https://api.darksky.net/forecast/f9a9fa45add29baf1393ac77dc7bc340/${position.coords.latitude},${position.coords.longitude}`)
+                                xhr.open('GET',`https://api.darksky.net/forecast/{key}/${position.coords.latitude},${position.coords.longitude}`)
                                 xhr.send()
                                 xhr.onload=()=>{
                                 const a=JSON.parse(xhr.responseText)
@@ -77,7 +77,7 @@
              <h4>Zone-{this.state.zone}</h4>
              <h4>Temperature in F-{this.state.temperature1}F</h4>
              <h4>Temperature in C-{this.state.temperature2}C</h4>
-             <img src={`https://www.mapquestapi.com/staticmap/v5/map?key=iT460H68tUWkbBWf2ViGxpj3oCCZSRIa&locations=${lat},${long}&size=@2x&zoom=15`}/>
+             <img src={`https://www.mapquestapi.com/staticmap/v5/map?key={key}&locations=${lat},${long}&size=@2x&zoom=15`}/>
              </div>
              )
          }
